@@ -1,0 +1,6 @@
+@LlantasGuerreroApi_HostAddress = http://localhost:5246
+
+GET {{LlantasGuerreroApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
