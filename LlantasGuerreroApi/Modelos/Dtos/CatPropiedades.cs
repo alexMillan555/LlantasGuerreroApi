@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace LlantasGuerreroApi.Modelos
+﻿namespace LlantasGuerreroApi.Modelos.Dtos
 {
     public class CatPropiedades
     {
-        [Key]
         public int IdPropiedad { get; set; }
         public string PropiedadNombre { get; set; }
         public bool Activo { get; set; }

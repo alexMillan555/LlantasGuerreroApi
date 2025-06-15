@@ -16,6 +16,9 @@ namespace LlantasGuerreroApi.Modelos
         public CatEstatus Estatus { get; set; }
         public DateTime FechaMovimiento { get; set; }
         public string Observaciones { get; set; }
+        public int IdUsuario { get; set; }
+        [ForeignKey("IdUsuario")]
+        public Usuarios Usuario { get; set; }
 
     }
 }

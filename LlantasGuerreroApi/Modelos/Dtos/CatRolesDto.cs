@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace LlantasGuerreroApi.Modelos
+﻿namespace LlantasGuerreroApi.Modelos.Dtos
 {
-    public class CatRoles
+    public class CatRolesDto
     {
-        [Key]
         public int IdRol { get; set; }
         public string NombreRol { get; set; }
         public bool Activo { get; set; }

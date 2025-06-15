@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LlantasGuerreroApi.Modelos
 {
     public class ArticulosPropiedades
     {
+        [Key]
         public int IdArticuloPropiedad { get; set; }        
         public string PropiedadValor { get; set; }
         public int IdArticulo { get; set; }

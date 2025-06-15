@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LlantasGuerreroApi.Modelos
+namespace LlantasGuerreroApi.Modelos.Dtos
 {
-    public class Usuarios
+    public class UsuarioDto
     {
-        [Key]
         public int IdUsuario { get; set; }
         public string NombreUsuario { get; set; }
         public string NombreCompleto { get; set; }

@@ -1,4 +1,5 @@
 using LlantasGuerreroApi.Datos;
+using LlantasGuerreroApi.Modelos;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

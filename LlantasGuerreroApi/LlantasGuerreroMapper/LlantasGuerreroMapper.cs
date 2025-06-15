@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LlantasGuerreroApi.Modelos;
+using LlantasGuerreroApi.Modelos.Dtos;
 
 namespace LlantasGuerreroApi.LlantasGuerreroMapper
 {
@@ -7,7 +8,7 @@ namespace LlantasGuerreroApi.LlantasGuerreroMapper
     {
         public LlantasGuerreroMapper()
         {
-            //CreateMap<CatArticulos, CatArticulosDto>(); 
+            CreateMap<CatArticulos, CatArticulosDto>().ReverseMap();
         }
     }
 }
