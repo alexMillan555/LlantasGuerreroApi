@@ -8,7 +8,8 @@ namespace LlantasGuerreroApi.LlantasGuerreroMapper
     {
         public LlantasGuerreroMapper()
         {
-            CreateMap<CatArticulos, CatArticulosDto>().ReverseMap();
+            CreateMap<CatArticulos, AltaArticuloDto>().ReverseMap();
+            CreateMap<CatArticulos, ActualizarArticulosDto>().ReverseMap();
         }
     }
 }

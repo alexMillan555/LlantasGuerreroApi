@@ -168,3 +168,5 @@ C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\
 C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\LlantasGuerreroApi\LlantasGuerreroApi\obj\Debug\net8.0\LlantasGuerreroApi.pdb
 C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\LlantasGuerreroApi\LlantasGuerreroApi\obj\Debug\net8.0\LlantasGuerreroApi.genruntimeconfig.cache
 C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\LlantasGuerreroApi\LlantasGuerreroApi\obj\Debug\net8.0\ref\LlantasGuerreroApi.dll
+C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\LlantasGuerreroApi\LlantasGuerreroApi\bin\Debug\net8.0\Microsoft.Practices.ServiceLocation.dll
+C:\Personal\Programación\Proyectos\Freelancing\LlantasGuerrero\Código\Backend\LlantasGuerreroApi\LlantasGuerreroApi\bin\Debug\net8.0\XAct.Core.PCL.dll
