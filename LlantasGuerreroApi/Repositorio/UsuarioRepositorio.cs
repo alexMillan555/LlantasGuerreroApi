@@ -111,19 +111,68 @@ namespace LlantasGuerreroApi.Repositorio
             return loginUsuarioRespuesta;
         }
 
-        public Task<UsuarioDatosDto> CrearUsuario(CrearUsuarioDto crearUsuarioDto)
+        public async Task<Usuarios> CrearUsuario(CrearUsuarioDto crearUsuarioDto)
         {
-            throw new NotImplementedException();
+            var passwordEncriptado = obtenermd5(crearUsuarioDto.Contraseña);
+
+            Usuarios usuarios = new Usuarios()
+            {
+                NombreUsuario = crearUsuarioDto.NombreUsuario,
+                NombreCompleto = crearUsuarioDto.NombreCompleto,
+                Contraseña = passwordEncriptado,
+                CorreoElectronico = crearUsuarioDto.CorreoElectronico                
+            };
+
+            _bd.Usuarios.Add(usuarios);
+            await _bd.SaveChangesAsync();
+            usuarios.Contraseña = passwordEncriptado;
+
+            // Asignar rol por defecto al usuario
+            UsuarioRol usuarioRol = new UsuarioRol()
+            {
+                IdUsuario = usuarios.IdUsuario,
+                IdRol = 5 // Asignar rol de usuario por defecto
+            };
+
+            _bd.UsuarioRol.Add(usuarioRol); 
+            await _bd.SaveChangesAsync();
+
+            return usuarios;
         }
 
         public int ObtenerRolUsuario(int idUsuario)
         {
-            throw new NotImplementedException();
+            var usuarioRol = _bd.UsuarioRol.FirstOrDefault(u => u.IdUsuario == idUsuario);
+
+            if(usuarioRol != null)            
+                return -1;
+            else
+                return usuarioRol.IdRol;
+            
         }
 
         public int ObtenerRolUsuario(string NombreUsuario)
         {
-            throw new NotImplementedException();
+            int IdUsuario = 0;
+            var usuario = _bd.Usuarios.Where(u => u.NombreUsuario.ToLower() == NombreUsuario)
+                .Select(
+                    u => new Usuarios
+                    {
+                        IdUsuario = u.IdUsuario
+                    }
+                );
+
+            if(usuario == null || !usuario.Any())
+                return -1;
+            else
+            {
+                var usuarioRol = _bd.UsuarioRol.FirstOrDefault(u => u.IdUsuario == IdUsuario);
+                if (usuarioRol != null)
+                    return -1;
+                else
+                    return usuarioRol.IdRol;
+            }
+            
         }
 
         public static string obtenermd5(string valor)

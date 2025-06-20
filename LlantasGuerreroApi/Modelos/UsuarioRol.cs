@@ -13,6 +13,6 @@ namespace LlantasGuerreroApi.Modelos
         public int IdRol { get; set; }
         [ForeignKey("IdRol")]
         public CatRoles Rol { get; set; }
-        public bool Activo { get; set; }
+        public bool Activo { get; set; } = true;
     }
 }
