@@ -11,5 +11,6 @@ namespace LlantasGuerreroApi.Modelos.Dtos
         public string CorreoElectronico { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
+        public string Rol { get; set; }
     }
 }

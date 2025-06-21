@@ -11,6 +11,6 @@ namespace LlantasGuerreroApi.Modelos
         public string Contraseña { get; set; }
         public string CorreoElectronico { get; set; }
         public bool Activo { get; set; } = true;
-        public DateTime FechaRegistro { get; set; }
+        public DateTime FechaRegistro { get; set; } = DateTime.Now;
     }
 }

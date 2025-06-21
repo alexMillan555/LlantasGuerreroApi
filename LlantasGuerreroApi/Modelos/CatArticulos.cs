@@ -15,6 +15,8 @@ namespace LlantasGuerreroApi.Modelos
         [Required]
         public int Cantidad { get; set;}
         [Required]
+        public int IdEstatus { get; set; } = 3;
+        [Required]
         public DateTime FechaRegistro { get; set; }
         [Required]
         public bool Activo { get; set; }

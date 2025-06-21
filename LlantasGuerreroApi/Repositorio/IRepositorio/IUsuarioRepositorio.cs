@@ -5,9 +5,9 @@ namespace LlantasGuerreroApi.Repositorio.IRepositorio
 {
     public interface IUsuarioRepositorio
     {
-        ICollection<Usuarios> ObtenerUsuarios();
-        Usuarios ObtenerUsuario(int IdUsuario);
-        Usuarios ObtenerUsuario(string NombreUsuario);
+        ICollection<UsuarioDto> ObtenerUsuarios();
+        UsuarioDto ObtenerUsuario(int IdUsuario);
+        IEnumerable<Usuarios> ObtenerUsuario(string NombreUsuario);
         bool ExisteUsuario(string nombreUsuario);
         Task<LoginUsuarioRespuestaDto> IniciarSesion(LoginUsuarioDto loginUsuarioDto);
         Task<Usuarios> CrearUsuario(CrearUsuarioDto crearUsuarioDto);

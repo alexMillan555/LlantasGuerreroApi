@@ -4,6 +4,7 @@ using LlantasGuerreroApi.Modelos;
 using LlantasGuerreroApi.Modelos.Dtos;
 using LlantasGuerreroApi.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -25,45 +26,87 @@ namespace LlantasGuerreroApi.Repositorio
             _mapper = mapper;
         }
 
-        public ICollection<Usuarios> ObtenerUsuarios()
-        {
-            return _bd.Usuarios.OrderBy(u => u.NombreUsuario).ToList();
+        public ICollection<UsuarioDto> ObtenerUsuarios()
+        {            
+            return _bd.Usuarios.OrderBy(u => u.NombreUsuario).Select
+                (u=> new UsuarioDto
+                {
+                    IdUsuario = u.IdUsuario,
+                    NombreUsuario = u.NombreUsuario,
+                    Contraseña = u.Contraseña, // No se recomienda enviar la contraseña pero está encriptada
+                    NombreCompleto = u.NombreCompleto,
+                    CorreoElectronico = u.CorreoElectronico,
+                    Activo = u.Activo,
+                    FechaRegistro = u.FechaRegistro,
+                    Rol = _bd.UsuarioRol.Where(ur => ur.IdUsuario == u.IdUsuario)
+                        .Select(ur => _bd.CatRoles.FirstOrDefault(r => r.IdRol == ur.IdRol).NombreRol)
+                        .FirstOrDefault() ?? "Sin rol asignado"
+                }).ToList();
         }
 
-        public Usuarios ObtenerUsuario(int IdUsuario)
+        public UsuarioDto ObtenerUsuario(int IdUsuario)
         {
-            return _bd.Usuarios.FirstOrDefault(u => u.IdUsuario == IdUsuario);
+            return _bd.Usuarios.Where(u => u.IdUsuario == IdUsuario).Select
+                (u => new UsuarioDto
+                {
+                    IdUsuario = u.IdUsuario,
+                    NombreUsuario = u.NombreUsuario,
+                    Contraseña = u.Contraseña,
+                    NombreCompleto = u.NombreCompleto,
+                    CorreoElectronico = u.CorreoElectronico,
+                    Activo = u.Activo,
+                    FechaRegistro = u.FechaRegistro,
+                    Rol = _bd.UsuarioRol.Where(ur => ur.IdUsuario == u.IdUsuario)
+                        .Select(ur => _bd.CatRoles.FirstOrDefault(r => r.IdRol == ur.IdRol).NombreRol)
+                        .FirstOrDefault() ?? "Sin rol asignado"
+                }).AsNoTracking() // Mejora rendimiento para consultas de solo lectura
+                .FirstOrDefault();
         }
 
-        public Usuarios ObtenerUsuario(string NombreUsuario)
+        public IEnumerable<Usuarios> ObtenerUsuario(string NombreUsuario)
         {
-            return _bd.Usuarios.FirstOrDefault(u => u.NombreUsuario == NombreUsuario);
+            IQueryable<Usuarios> query = _bd.Usuarios;
+            if(!string.IsNullOrEmpty(NombreUsuario))            
+                query = query.Where(u => u.NombreUsuario.ToUpper().Contains(NombreUsuario.ToUpper()));
+            
+            return query.ToList();
         }
 
         public bool ExisteUsuario(string nombreUsuario)
         {
             var usuarioBd = _bd.Usuarios.FirstOrDefault(u => u.NombreUsuario.ToLower().Trim() == nombreUsuario.ToLower().Trim());
             if (usuarioBd == null)            
-                return false;
-            else 
                 return true;
-            
+
+            return false;
         }
 
         public async Task<LoginUsuarioRespuestaDto> IniciarSesion(LoginUsuarioDto loginUsuarioDto)
         {
             var contraseñaEncriptada = obtenermd5(loginUsuarioDto.Contraseña);
 
-            var usuario = _bd.Usuarios.FirstOrDefault(
-                u => u.NombreUsuario.ToLower() == loginUsuarioDto.NombreUsuario.ToLower()
-                && u.Contraseña == contraseñaEncriptada);
+            var usuarioDto = _bd.Usuarios.Where(u=>u.NombreUsuario == loginUsuarioDto.NombreUsuario 
+            && u.Contraseña == contraseñaEncriptada).Select
+            (u => new UsuarioDto
+            {
+                IdUsuario = u.IdUsuario,
+                NombreUsuario = u.NombreUsuario,
+                NombreCompleto = u.NombreCompleto,
+                Contraseña = u.Contraseña, // No se recomienda enviar la contraseña pero está encriptada
+                CorreoElectronico = u.CorreoElectronico,
+                Activo = u.Activo,
+                FechaRegistro = u.FechaRegistro,
+                Rol = _bd.UsuarioRol.Where(ur => ur.IdUsuario == u.IdUsuario)
+                    .Select(ur => _bd.CatRoles.FirstOrDefault(r => r.IdRol == ur.IdRol).NombreRol)
+                    .FirstOrDefault() ?? "Sin rol asignado"
+            }).FirstOrDefault();
 
-            if (usuario != null)
+            if (usuarioDto == null)
             {
                 return new LoginUsuarioRespuestaDto()
                 {
                     Token = "",
-                    Usuario = null
+                    UsuarioDto = null
                 };
             }
 
@@ -72,7 +115,8 @@ namespace LlantasGuerreroApi.Repositorio
                 .Select(u => new UsuarioDatosDto
                 {
                     Id = u.IdUsuario,
-                    NombreUsuario = u.NombreUsuario
+                    NombreUsuario = u.NombreUsuario,
+                    Nombre = u.NombreCompleto
                 }).FirstOrDefault();
 
             var usuarioRol = _bd.UsuarioRol.FirstOrDefault(
@@ -83,7 +127,7 @@ namespace LlantasGuerreroApi.Repositorio
                 return new LoginUsuarioRespuestaDto()
                 {
                     Token = "",
-                    Usuario = null
+                    UsuarioDto = null
                 };
             }
 
@@ -94,7 +138,7 @@ namespace LlantasGuerreroApi.Repositorio
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, usuario.NombreUsuario.ToString()),
+                    new Claim(ClaimTypes.Name, usuarioDto.NombreUsuario.ToString()),
                     new Claim(ClaimTypes.Role, usuarioRol.IdRol.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -105,7 +149,8 @@ namespace LlantasGuerreroApi.Repositorio
             LoginUsuarioRespuestaDto loginUsuarioRespuesta = new LoginUsuarioRespuestaDto()
             {
                 Token = manejadoToken.WriteToken(token),
-                Usuario = usuario
+                UsuarioDto = usuarioDto,
+                IdRol = usuarioRol.IdRol
             };
 
             return loginUsuarioRespuesta;

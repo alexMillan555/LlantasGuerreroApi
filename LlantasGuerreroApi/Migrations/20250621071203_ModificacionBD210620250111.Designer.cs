@@ -4,6 +4,7 @@ using LlantasGuerreroApi.Datos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LlantasGuerreroApi.Migrations
 {
     [DbContext(typeof(ContextoAplicacionBD))]
-    partial class ContextoAplicacionBDModelSnapshot : ModelSnapshot
+    [Migration("20250621071203_ModificacionBD210620250111")]
+    partial class ModificacionBD210620250111
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
