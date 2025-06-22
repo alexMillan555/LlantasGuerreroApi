@@ -1,6 +1,6 @@
 ﻿namespace LlantasGuerreroApi.Modelos.Dtos
 {
-    public class CatPropiedades
+    public class CatPropiedadesDto
     {
         public int IdPropiedad { get; set; }
         public string PropiedadNombre { get; set; }

@@ -12,6 +12,8 @@ namespace LlantasGuerreroApi.LlantasGuerreroMapper
             CreateMap<CatArticulos, ActualizarArticulosDto>().ReverseMap();
             CreateMap<Usuarios, UsuarioDto>().ReverseMap();
             CreateMap<CatArticulos, CatArticulosDto>().ReverseMap();
+            CreateMap<CatArticulos, CrearArticuloDto>().ReverseMap();
+            CreateMap<CatArticulos, BajaArticuloDto>().ReverseMap();
         }
     }
 }

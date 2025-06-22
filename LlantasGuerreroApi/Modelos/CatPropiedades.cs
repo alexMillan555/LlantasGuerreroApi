@@ -7,6 +7,6 @@ namespace LlantasGuerreroApi.Modelos
         [Key]
         public int IdPropiedad { get; set; }
         public string PropiedadNombre { get; set; }
-        public bool Activo { get; set; }
+        public bool Activo { get; set; } = true;
     }
 }

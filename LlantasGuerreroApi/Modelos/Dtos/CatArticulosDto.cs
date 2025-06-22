@@ -9,8 +9,10 @@ namespace LlantasGuerreroApi.Modelos.Dtos
         public string Nombre { get; set; }
         public double Importe { get; set; }
         public int Cantidad { get; set; }
-        public int IdEstatus { get; set; } = 3;
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
-        public bool Activo { get; set; } = true;
+        public int IdEstatus { get; set; }
+        public DateTime FechaRegistro { get; set; } 
+        public bool Activo { get; set; }
+        public string PropiedadNombre { get; set; }
+        public string PropiedadValor { get; set; }
     }
 }

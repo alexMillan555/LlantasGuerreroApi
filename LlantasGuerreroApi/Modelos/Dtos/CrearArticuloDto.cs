@@ -8,5 +8,8 @@ namespace LlantasGuerreroApi.Modelos.Dtos
         public string Nombre { get; set; }
         public double Importe { get; set; }
         public int Cantidad { get; set; }
+        //public string PropiedadNombre { get; set; }
+        //public string PropiedadValor { get; set; }
+
     }
 }
