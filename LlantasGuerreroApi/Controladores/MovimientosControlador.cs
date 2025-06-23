@@ -111,7 +111,7 @@ namespace LlantasGuerreroApi.Controladores
                 return StatusCode(404, ModelState);
             }
 
-            return CreatedAtRoute("ObtenerMovimiento", new { movimientoId = movimientoVenta }, movimientoVenta);
+            return CreatedAtRoute("ObtenerMovimiento", new { movimientoId = movimientoVenta.IdMovimiento }, movimientoVenta);
         }
 
         [HttpGet("ObtenerVentas")]

@@ -106,8 +106,8 @@ builder.Services.AddCors(p => p.AddPolicy("PoliticaCors", build =>
     build.WithOrigins("https://alexservidor.softether.net").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://alexservidor.softether.net").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://localhost:7008").AllowAnyMethod().AllowAnyHeader();
-    build.WithOrigins("http://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader();
-    build.WithOrigins("https://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    build.WithOrigins("https://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }));
 
 builder.Services.AddAuthorization(options =>

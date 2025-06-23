@@ -28,15 +28,14 @@ namespace LlantasGuerreroApi.Controladores
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize]
         public IActionResult ObtenerArticulos()
         {
-            var idRol = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            //var idRol = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-            if (idRol != "1" && idRol != "2" && idRol != "3")
-            {
-                return Unauthorized(); // o return Unauthorized();
-            }            
+            //if (idRol != "1" && idRol != "2" && idRol != "3")
+            //{
+            //    return Unauthorized(); // o return Unauthorized();
+            //}            
 
             var listArticulos = _artRepo.ObtenerArticulos();
 

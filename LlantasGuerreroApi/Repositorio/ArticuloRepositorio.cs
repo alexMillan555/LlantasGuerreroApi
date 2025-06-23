@@ -238,6 +238,7 @@ namespace LlantasGuerreroApi.Repositorio
         public ICollection<CatArticulosDto> ObtenerArticulos()
         {
             return _bd.CatArticulos
+                .Where(a => a.Activo == true)
                 .Select(a => new CatArticulosDto
                 {
                     IdArticulo = a.IdArticulo,
