@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LlantasGuerreroApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e86ee8d7712a20e6499a3a15e2a4e412b7525be")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c077000ed8444b73420090d677cafd1bb6b2e711")]
 [assembly: System.Reflection.AssemblyProductAttribute("LlantasGuerreroApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LlantasGuerreroApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

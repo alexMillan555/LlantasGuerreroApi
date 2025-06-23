@@ -11,6 +11,7 @@ namespace LlantasGuerreroApi.Modelos.Dtos
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         public string Contraseña { get; set; }
         public string CorreoElectronico { get; set; }
+        public int IdRol { get; set; }
 
     }
 }

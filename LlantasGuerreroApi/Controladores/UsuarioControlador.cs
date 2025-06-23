@@ -29,7 +29,7 @@ namespace LlantasGuerreroApi.Controladores
             this._respuestaApi = new();
         }
 
-        [HttpGet]
+        [HttpGet("ObtenerListaUsuarios")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -54,7 +54,7 @@ namespace LlantasGuerreroApi.Controladores
             return Ok(listaUsuariosDto);
         }
 
-        [HttpGet("{usuarioId:int}", Name = "ObtenerUsuarioId")]
+        [HttpGet("{usuarioId:int}/ObtenerUsuarioId", Name = "ObtenerUsuarioId")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -82,29 +82,37 @@ namespace LlantasGuerreroApi.Controladores
             return Ok(itemUsuarioDto);
         }
 
-        //[HttpGet(Name = "ObtenerUsuarioNombre")]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public IActionResult ObtenerUsuarioNombre(string nombreUsuario)
-        //{
-        //    try
-        //    {
-        //        var resultado = _usRepo.ObtenerUsuario(nombreUsuario);
-        //        if (resultado.Any())
-        //        {
-        //            return Ok(resultado);
-        //        }
+        [HttpGet("ObtenerUsuarioNombre", Name = "ObtenerUsuarioNombre")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+        public IActionResult ObtenerUsuarioNombre(string nombreUsuario)
+        {
+            var idRol = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-        //        return NotFound();
-        //    }
-        //    catch (Exception)
-        //    {
+            if (idRol != "1" && idRol != "2")
+            {
+                return Unauthorized(); // o return Unauthorized();
+            }
 
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Error recuperando datos de la aplicación");
-        //    }
-        //}
+            try
+            {
+                var resultado = _usRepo.ObtenerUsuario(nombreUsuario);
+                if (resultado.Any())
+                {
+                    return Ok(resultado);
+                }
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error recuperando datos de la aplicación");
+            }
+        }
 
         [HttpPost("registro")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -112,6 +120,14 @@ namespace LlantasGuerreroApi.Controladores
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Registro([FromBody] CrearUsuarioDto usuarioRegistroDto)
         {
+            if(usuarioRegistroDto.IdRol !=4 && usuarioRegistroDto.IdRol != 6)
+            {
+                _respuestaApi.StatusCode = HttpStatusCode.BadRequest;
+                _respuestaApi.IsSuccess = false;
+                _respuestaApi.ErrorMessages.Add("Solo se permiten crear roles de usuario o cliente");
+                return BadRequest(_respuestaApi);
+            }
+
             bool validarNombreUsuarioUnico = _usRepo.ExisteUsuario(usuarioRegistroDto.NombreUsuario);
             if (!validarNombreUsuarioUnico)
             {

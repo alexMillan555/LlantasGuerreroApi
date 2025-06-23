@@ -9,6 +9,7 @@ namespace LlantasGuerreroApi.Repositorio.IRepositorio
         UsuarioDto ObtenerUsuario(int IdUsuario);
         IEnumerable<Usuarios> ObtenerUsuario(string NombreUsuario);
         bool ExisteUsuario(string nombreUsuario);
+        bool ExisteUsuario(int IdUsuario);
         Task<LoginUsuarioRespuestaDto> IniciarSesion(LoginUsuarioDto loginUsuarioDto);
         Task<Usuarios> CrearUsuario(CrearUsuarioDto crearUsuarioDto);
         int ObtenerRolUsuario(int idUsuario);

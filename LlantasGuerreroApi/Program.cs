@@ -8,22 +8,31 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Win32;
 
 var builder = WebApplication.CreateBuilder(args);
 
+RegistryKey conexionSql = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\LlantasGuerrero");
+string cadenaConexionSql = conexionSql.GetValue("ConexionSql")?.ToString(); 
+
 // Add services to the container.
 builder.Services.AddDbContext<ContextoAplicacionBD>(opciones =>
-        opciones.UseSqlServer(builder.Configuration.GetConnectionString("ConexionSql")));
+        opciones.UseSqlServer(cadenaConexionSql));
 
 //Agregamos los Repositorios
 builder.Services.AddScoped<IArticuloRepositorio, ArticuloRepositorio>();
 //builder.Services.AddScoped<IPeliculaRepositorio, PeliculaRepositorio>();
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+builder.Services.AddScoped<IMovimientoRepositorio, MovimientoRepositorio>();
+builder.Services.AddScoped<ICatalogoRepositorio, CatalogoRepositorio>();
 //Agregar filtro personalizado validar rol
 //builder.Services.AddScoped<AtritutoValidarRolJwtFiltro>(); //NO FUNCIONAL POR EL MOMENTO
 
 //OBTENER LLAVE TOKEN
-var llave = builder.Configuration.GetValue<string>("ApiSettings:Secreta");
+//var llave = builder.Configuration.GetValue<string>("ApiSettings:Secreta");
+RegistryKey llaveApi = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\LlantasGuerrero");
+string cadenaLlaveApi = llaveApi.GetValue("Secreta")?.ToString();
+var llave = cadenaLlaveApi;
 
 //Agregamos el AutoMapper
 builder.Services.AddAutoMapper(typeof(LlantasGuerreroMapper));
@@ -90,7 +99,15 @@ builder.Services.AddSwaggerGen();
 //Se usa (*) para todos los dominios
 builder.Services.AddCors(p => p.AddPolicy("PoliticaCors", build =>
 {
+    build.WithOrigins("http://localhost").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://localhost").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://10.166.1.75").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://10.166.1.75").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://alexservidor.softether.net").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://alexservidor.softether.net").AllowAnyMethod().AllowAnyHeader();
     build.WithOrigins("http://localhost:7008").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("http://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader();
+    build.WithOrigins("https://llantasguerrero.com.mx").AllowAnyMethod().AllowAnyHeader();
 }));
 
 builder.Services.AddAuthorization(options =>
@@ -112,12 +129,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//PRUEBA
+//app.UseSwaggerUI();
+//app.UseSwagger();
 
 app.UseHttpsRedirection();
 
 //Soporte para CORS
 app.UseCors("PoliticaCors");
 
+//EL USE AUTHENTICATION ES EL SOPORTE PARA AUTENTICACIÓN
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

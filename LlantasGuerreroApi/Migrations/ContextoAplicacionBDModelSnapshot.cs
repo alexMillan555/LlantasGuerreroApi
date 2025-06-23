@@ -22,6 +22,42 @@ namespace LlantasGuerreroApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("LlantasGuerreroApi.Modelos.ArticulosEntradas", b =>
+                {
+                    b.Property<int>("IdArticuloEntrada")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdArticuloEntrada"));
+
+                    b.Property<int>("ArticuloEntradaCantidad")
+                        .HasColumnType("int");
+
+                    b.Property<float>("ArticuloEntradaImporte")
+                        .HasColumnType("real");
+
+                    b.Property<string>("ArticuloEntradaObservaciones")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaEntradaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdArticulo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdMovimiento")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdArticuloEntrada");
+
+                    b.HasIndex("IdArticulo");
+
+                    b.HasIndex("IdMovimiento");
+
+                    b.ToTable("ArticulosEntradas");
+                });
+
             modelBuilder.Entity("LlantasGuerreroApi.Modelos.ArticulosPropiedades", b =>
                 {
                     b.Property<int>("IdArticuloPropiedad")
@@ -302,6 +338,25 @@ namespace LlantasGuerreroApi.Migrations
                     b.HasKey("IdUsuario");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("LlantasGuerreroApi.Modelos.ArticulosEntradas", b =>
+                {
+                    b.HasOne("LlantasGuerreroApi.Modelos.CatArticulos", "CatArticulo")
+                        .WithMany()
+                        .HasForeignKey("IdArticulo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LlantasGuerreroApi.Modelos.Movimientos", "Movimiento")
+                        .WithMany()
+                        .HasForeignKey("IdMovimiento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CatArticulo");
+
+                    b.Navigation("Movimiento");
                 });
 
             modelBuilder.Entity("LlantasGuerreroApi.Modelos.ArticulosPropiedades", b =>

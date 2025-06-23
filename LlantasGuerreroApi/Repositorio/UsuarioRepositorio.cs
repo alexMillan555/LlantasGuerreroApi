@@ -6,6 +6,7 @@ using LlantasGuerreroApi.Repositorio.IRepositorio;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,11 +19,12 @@ namespace LlantasGuerreroApi.Repositorio
         private readonly ContextoAplicacionBD _bd;
         private string claveSecreta;
         private readonly IMapper _mapper;
+        RegistryKey llaveApi = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\LlantasGuerrero");        
 
         public UsuarioRepositorio(ContextoAplicacionBD bd, IConfiguration config, IMapper mapper)
         {
             _bd = bd;
-            claveSecreta = config.GetValue<string>("ApiSettings:Secreta");
+            claveSecreta = llaveApi.GetValue("Secreta").ToString();
             _mapper = mapper;
         }
 
@@ -176,7 +178,7 @@ namespace LlantasGuerreroApi.Repositorio
             UsuarioRol usuarioRol = new UsuarioRol()
             {
                 IdUsuario = usuarios.IdUsuario,
-                IdRol = 5 // Asignar rol de usuario por defecto
+                IdRol = crearUsuarioDto.IdRol // Asignar rol de usuario por defecto
             };
 
             _bd.UsuarioRol.Add(usuarioRol); 
@@ -231,5 +233,13 @@ namespace LlantasGuerreroApi.Repositorio
             return resp;
         }
 
+        public bool ExisteUsuario(int IdUsuario)
+        {
+            var usuarioBd = _bd.Usuarios.FirstOrDefault(u => u.IdUsuario == IdUsuario);
+            if (usuarioBd == null)
+                return true;
+
+            return false;
+        }
     }
 }

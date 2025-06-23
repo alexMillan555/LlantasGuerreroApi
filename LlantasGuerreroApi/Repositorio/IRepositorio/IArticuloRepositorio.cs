@@ -14,7 +14,17 @@ namespace LlantasGuerreroApi.Repositorio.IRepositorio
         bool BajaArticulo(CatArticulos articulo, BajaArticuloDto bajaArticuloDto);
         bool EliminarArticulo(CatArticulos articulo);
         bool ExisteArticulo(string nombreArticulo);
+        bool ExisteArticulo(int idArticulo);
         bool Guardar();
+        bool ExistePropiedad(string nombrePropiedad);
+        bool ExistePropiedad(int idPropiedad);
+        bool ExistePropiedadArticulo(int IdArticulo, int IdPropiedad);
         bool CrearPropiedadArticulo(CrearPropiedadArticuloDto crearPropiedadArticuloDto);
+        ArticulosPropiedadesDto VerPropiedadesArticulo(int idArticulo);
+        bool ActualizarPropiedadArticulo(ActualizarArticuloPropiedadDto actualizarArticuloPropiedadDto);
+        bool ActualizarPropiedadArticuloNombre(ActualizarNombrePropiedadDto actualizarNombrePropiedadDto);
+        bool EliminarPropiedadArticulo(EliminarPropiedadArticuloDto eliminarPropiedadArticuloDto);
+        bool EliminarPropiedad(EliminarPropiedadDto eliminarPropiedadDto);
+        bool ArticuloEntrada(ArticulosEntradas articuloEntrada, ArticuloEntradaDto articuloEntradaDto, string nombreUsuario);
     }
 }

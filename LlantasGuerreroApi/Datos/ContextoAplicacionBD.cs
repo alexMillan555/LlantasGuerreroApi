@@ -16,6 +16,7 @@ namespace LlantasGuerreroApi.Datos
         }
 
         //Aquí puedes definir tus DbSets para las entidades
+        public DbSet<ArticulosEntradas> ArticulosEntradas { get; set; }
         public DbSet<ArticulosPropiedades> ArticulosPropiedades { get; set; }
         public DbSet<CatArticulos> CatArticulos { get; set; }
         public DbSet<CatEstatus> CatEstatus { get; set; }

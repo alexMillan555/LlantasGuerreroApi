@@ -167,7 +167,7 @@ namespace LlantasGuerreroApi.Repositorio
             Movimientos movimiento = new Movimientos()
             {
                 Cantidad = articulo.Cantidad,
-                IdTipoTransaccion = 1, // Asumiendo que 1 es para ingreso
+                IdTipoTransaccion = 4, // Asumiendo que 4 es para ingreso
                 IdEstatus = 7, // Asumiendo que 7 es para finalizado
                 Observaciones = "Ingreso inicial del artículo",
                 IdUsuario = idUsuario
@@ -285,6 +285,248 @@ namespace LlantasGuerreroApi.Repositorio
             }
 
             return Guardar();
+        }
+
+        public ArticulosPropiedadesDto VerPropiedadesArticulo(int idArticulo)
+        {
+            return _bd.ArticulosPropiedades.Where(ap => ap.IdArticulo == idArticulo)
+                .Select(ap => new ArticulosPropiedadesDto
+                {
+                    Articulo = _bd.CatArticulos.FirstOrDefault(a => a.IdArticulo == ap.IdArticulo).Nombre,
+                    PropiedadNombre = _bd.CatPropiedades.FirstOrDefault(p => p.IdPropiedad == ap.IdPropiedad).PropiedadNombre,
+                    PropiedadValor = ap.PropiedadValor,
+                    Activo = ap.Activo
+                }).FirstOrDefault();
+        }
+
+        public bool ActualizarPropiedadArticulo(ActualizarArticuloPropiedadDto actualizarArticuloPropiedadDto)
+        {
+            var propiedadExistente = _bd.ArticulosPropiedades
+                .FirstOrDefault(ap => ap.IdArticulo == actualizarArticuloPropiedadDto.IdArticulo && ap.IdPropiedad == actualizarArticuloPropiedadDto.IdPropiedad);
+            var dtoProperties = typeof(ActualizarArticuloPropiedadDto).GetProperties();
+
+            if (propiedadExistente != null)
+            {
+                foreach (var prop in dtoProperties)
+                {
+                    if (prop.Name == "IdArticulo") continue; // ¡Excluye el ID!
+                    if (prop.Name == "IdPropiedad") continue; // ¡Excluye el ID!
+
+                    var value = prop.GetValue(actualizarArticuloPropiedadDto);
+                    var entityType = _bd.Entry(propiedadExistente).Entity.GetType();
+                    var entityProp = entityType.GetProperty(prop.Name);
+
+                    if (value != null) // Solo actualiza si el DTO tiene valor
+                    {
+                        if (entityProp != null) // ¡Solo actualiza si la propiedad existe!
+                        {
+                            _bd.Entry(propiedadExistente).Property(prop.Name).CurrentValue = value;
+                            _bd.Entry(propiedadExistente).Property(prop.Name).IsModified = true;
+                        }
+                    }
+                }
+                return Guardar();
+            }
+            else
+                return false; // La propiedad no existe para el artículo especificado
+            
+        }
+
+        public bool ActualizarPropiedadArticuloNombre(ActualizarNombrePropiedadDto actualizarNombrePropiedadDto)
+        {
+            var propiedadExistente = _bd.CatPropiedades
+                .FirstOrDefault(p => p.IdPropiedad == actualizarNombrePropiedadDto.IdPropiedad);
+            var dtoProperties = typeof(ActualizarNombrePropiedadDto).GetProperties();
+            if (propiedadExistente != null)
+            {
+                foreach (var prop in dtoProperties)
+                {
+                    if (prop.Name == "IdPropiedad") continue; // ¡Excluye el ID!
+
+                    var value = prop.GetValue(actualizarNombrePropiedadDto);
+                    var entityType = _bd.Entry(propiedadExistente).Entity.GetType();
+                    var entityProp = entityType.GetProperty(prop.Name);
+
+                    if (value != null) // Solo actualiza si el DTO tiene valor
+                    {
+                        if (entityProp != null) // ¡Solo actualiza si la propiedad existe!
+                        {
+                            _bd.Entry(propiedadExistente).Property(prop.Name).CurrentValue = value;
+                            _bd.Entry(propiedadExistente).Property(prop.Name).IsModified = true;
+                        }
+                    }
+                }
+                return Guardar();
+            }
+            else
+                return false;
+            
+        }
+
+        public bool EliminarPropiedadArticulo(EliminarPropiedadArticuloDto eliminarPropiedadArticuloDto)
+        {
+            var propiedadExistente = _bd.ArticulosPropiedades
+                .FirstOrDefault(p => p.IdPropiedad == eliminarPropiedadArticuloDto.IdPropiedad &&
+                p.IdArticulo == eliminarPropiedadArticuloDto.IdArticulo);
+            var dtoProperties = typeof(EliminarPropiedadArticuloDto).GetProperties();
+
+            if (propiedadExistente != null)
+            {
+                propiedadExistente.Activo = 0; // Marcar como inactivo
+                foreach (var prop in dtoProperties)
+                {
+                    if (prop.Name == "IdArticulo") continue; // ¡Excluye el ID!
+                    if (prop.Name == "IdPropiedad") continue; // ¡Excluye el ID!
+
+                    var value = prop.GetValue(eliminarPropiedadArticuloDto);
+                    var entityType = _bd.Entry(propiedadExistente).Entity.GetType();
+                    var entityProp = entityType.GetProperty(prop.Name);
+
+                    if (value != null) // Solo actualiza si el DTO tiene valor
+                    {
+                        if (entityProp != null) // ¡Solo actualiza si la propiedad existe!
+                        {
+                            _bd.Entry(propiedadExistente).Property(prop.Name).CurrentValue = value;
+                            _bd.Entry(propiedadExistente).Property(prop.Name).IsModified = true;
+                        }
+                    }
+                }
+
+                return Guardar();
+            }
+            else
+                return false;
+        }
+
+        public bool EliminarPropiedad(EliminarPropiedadDto eliminarPropiedadDto)
+        {
+            var propiedadExistente = _bd.CatPropiedades
+                .FirstOrDefault(p => p.IdPropiedad == eliminarPropiedadDto.IdPropiedad);
+            var dtoProperties = typeof(EliminarPropiedadDto).GetProperties();
+            if(propiedadExistente != null)
+            {
+                propiedadExistente.Activo = false; // Marcar como inactivo
+                foreach (var prop in dtoProperties)
+                {
+                    
+                    if (prop.Name == "IdPropiedad") continue; // ¡Excluye el ID!
+
+                    var value = prop.GetValue(eliminarPropiedadDto);
+                    var entityType = _bd.Entry(propiedadExistente).Entity.GetType();
+                    var entityProp = entityType.GetProperty(prop.Name);
+
+                    if (value != null) // Solo actualiza si el DTO tiene valor
+                    {
+                        if (entityProp != null) // ¡Solo actualiza si la propiedad existe!
+                        {
+                            _bd.Entry(propiedadExistente).Property(prop.Name).CurrentValue = value;
+                            _bd.Entry(propiedadExistente).Property(prop.Name).IsModified = true;
+                        }
+                    }
+                }
+                dtoProperties = null;
+                
+                var articuloPropiedadExistente = _bd.ArticulosPropiedades
+                    .FirstOrDefault(ap => ap.IdPropiedad == propiedadExistente.IdPropiedad);   
+                
+                if(articuloPropiedadExistente != null)
+                {
+                    var eliminarArticuloPropiedadDto = new EliminarPropiedadArticuloDto
+                    {
+                        IdArticulo = articuloPropiedadExistente.IdArticulo,
+                        IdPropiedad = articuloPropiedadExistente.IdPropiedad
+                    };
+                    dtoProperties = typeof(EliminarPropiedadArticuloDto).GetProperties();
+                    articuloPropiedadExistente.Activo = 0; // Marcar como inactivo
+
+                    foreach (var prop in dtoProperties)
+                    {
+                        if (prop.Name == "IdArticulo") continue; // ¡Excluye el ID!
+                        if (prop.Name == "IdPropiedad") continue; // ¡Excluye el ID!
+
+                        var value = prop.GetValue(eliminarArticuloPropiedadDto);
+                        var entityType = _bd.Entry(articuloPropiedadExistente).Entity.GetType();
+                        var entityProp = entityType.GetProperty(prop.Name);
+
+                        if (value != null) // Solo actualiza si el DTO tiene valor
+                        {
+                            if (entityProp != null) // ¡Solo actualiza si la propiedad existe!
+                            {
+                                _bd.Entry(articuloPropiedadExistente).Property(prop.Name).CurrentValue = value;
+                                _bd.Entry(articuloPropiedadExistente).Property(prop.Name).IsModified = true;
+                            }
+                        }
+                    }
+                }
+                return Guardar();
+            }
+            else
+                return false;
+        }
+
+        public bool ExistePropiedad(string nombrePropiedad)
+        {
+            bool valor = _bd.CatPropiedades
+                .Any(p => p.PropiedadNombre.ToUpper() == nombrePropiedad.ToUpper() && p.Activo == true);
+            return valor;
+        }
+
+        public bool ExistePropiedadArticulo(int IdArticulo, int IdPropiedad)
+        {
+            bool valor = _bd.ArticulosPropiedades
+                .Any(ap => ap.IdArticulo == IdArticulo && ap.IdPropiedad == IdPropiedad && ap.Activo == 1);
+            return valor;
+        }
+
+        public bool ExistePropiedad(int idPropiedad)
+        {
+            bool valor = _bd.CatPropiedades
+                .Any(p => p.IdPropiedad == idPropiedad && p.Activo == true);
+            return valor;
+        }
+
+        public bool ArticuloEntrada(ArticulosEntradas articuloEntrada, ArticuloEntradaDto articuloEntradaDto, string nombreUsuario)
+        {
+            var idUsuario = _bd.Usuarios.FirstOrDefault(u => u.NombreUsuario.ToUpper() == nombreUsuario.ToUpper()).IdUsuario;
+
+            Movimientos movimiento = new Movimientos()
+            {
+                Cantidad = articuloEntradaDto.ArticuloEntradaCantidad,
+                IdTipoTransaccion = 4, // Asumiendo que 1 es para ingreso
+                IdEstatus = 7, // Asumiendo que 7 es para finalizado
+                Observaciones = "Entrada de artículo",
+                IdUsuario = idUsuario
+            };
+            _bd.Movimientos.Add(movimiento);
+            Guardar();
+
+            articuloEntrada.IdMovimiento = movimiento.IdMovimiento;
+            _bd.ArticulosEntradas.Add(articuloEntrada);
+            Guardar();            
+
+            MovimientosDetalle movimientosDetalle = new MovimientosDetalle()
+            {
+                Cantidad = articuloEntradaDto.ArticuloEntradaCantidad,
+                IdArticulo = articuloEntradaDto.IdArticulo,
+                IdMovimiento = movimiento.IdMovimiento,
+                IdEstatus = 7 // Asumiendo que 7 es para finalizado
+            };
+            _bd.MovimientosDetalle.Add(movimientosDetalle);
+            Guardar();
+
+            var articulo = _bd.CatArticulos.Find(articuloEntradaDto.IdArticulo);
+            articulo.Cantidad += articuloEntradaDto.ArticuloEntradaCantidad;
+            _bd.Entry(articulo).State = EntityState.Modified;
+            _bd.Entry(articulo).Property(a => a.Cantidad).IsModified = true;
+
+            return Guardar();
+        }
+
+        public bool ExisteArticulo(int idArticulo)
+        {
+            bool valor = _bd.CatArticulos
+                .Any(a => a.IdArticulo == idArticulo && a.Activo == true);
+            return valor;
         }
     }   
 }
